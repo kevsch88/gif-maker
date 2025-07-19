@@ -1,6 +1,7 @@
 import argparse
 import os
 from moviepy.video.io.VideoFileClip import VideoFileClip
+import moviepy.video.fx as vfx
 
 
 def convert_video_to_gif(video_path, output_gif_path, start_time, stop_time, fps=10, scale=1.0):
@@ -36,7 +37,7 @@ def convert_video_to_gif(video_path, output_gif_path, start_time, stop_time, fps
 
         if scale != 1.0:
             print(f"Scaling video by a factor of {scale}")
-            trimmed_clip = trimmed_clip.resize(scale)
+            trimmed_clip = trimmed_clip.with_effects([vfx.Resize(scale)])
 
         print(f"Converting trimmed clip to GIF: {output_gif_path}")
         # adjust the fps (frames per second) for gif quality & size

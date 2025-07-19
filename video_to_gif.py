@@ -3,7 +3,7 @@ import os
 from moviepy.video.io.VideoFileClip import VideoFileClip
 
 
-def convert_video_to_gif(video_path, output_gif_path, start_time, stop_time, fps=10):
+def convert_video_to_gif(video_path, output_gif_path, start_time, stop_time, fps=10, scale=1.0):
     """
     Converts a video clip to a GIF, trimming it based on start and stop times.
 
@@ -13,6 +13,7 @@ def convert_video_to_gif(video_path, output_gif_path, start_time, stop_time, fps
         start_time (float): Start time in seconds for trimming.
         stop_time (float): Stop time in seconds for trimming.
         fps (int): Frames per second for the output GIF.
+        scale (float): Factor to scale the video resolution.
     """
     try:
         if not os.path.exists(video_path):
@@ -28,9 +29,14 @@ def convert_video_to_gif(video_path, output_gif_path, start_time, stop_time, fps
                 f"Video duration is {clip.duration:.2f} seconds. "
                 f"Ensure 0 <= start < stop <= duration."
             )
-
+        if stop_time is None:
+            stop_time = clip.duration
         print(f"Trimming video from {start_time:.2f}s to {stop_time:.2f}s...")
         trimmed_clip = clip.subclipped(start_time, stop_time)
+
+        if scale != 1.0:
+            print(f"Scaling video by a factor of {scale}")
+            trimmed_clip = trimmed_clip.resize(scale)
 
         print(f"Converting trimmed clip to GIF: {output_gif_path}")
         # adjust the fps (frames per second) for gif quality & size
@@ -74,14 +80,20 @@ def main():
     parser.add_argument(
         "--start",
         type=float,
-        required=True,
-        help="Start time in seconds for start of the clip."
+        default=0,
+        help="Start time in seconds for the start of the clip (default: beginning)."
+    )
+    parser.add_argument(
+        "--scale",
+        type=float,
+        default=1.0,
+        help="Factor to scale the video resolution by (e.g., 0.5 for half size)."
     )
     parser.add_argument(
         "--stop",
         type=float,
-        required=True,
-        help="Stop time in seconds for the end of the clip."
+        default=None,
+        help="Stop time in seconds for the end of the clip (default: end of video)."
     )
     parser.add_argument(
         "--fps",
@@ -97,7 +109,8 @@ def main():
         args.output_gif_path,
         args.start,
         args.stop,
-        args.fps
+        args.fps,
+        args.scale
     )
 
 

@@ -202,6 +202,5 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-uv.lock
 *.mp4
 *.gif

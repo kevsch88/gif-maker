@@ -1,7 +1,9 @@
 [project]
-name = "gifmaker"
+name = "gif-maker"
 version = "0.1.0"
 requires-python = ">=3.11"
-dependencies = [
-    "moviepy>=2.2.1",
-]
+description = "A simple Python script to convert video clips into animated GIFs."
+dependencies = ["moviepy>=2.2.1"]
+authors = [{ name = "Kevin N. Schneider", email = "kevsch88@gmail.com" }]
+license = { text = "MIT License" }
+readme = "README.md"

@@ -23,7 +23,8 @@ def convert_video_to_gif(video_path, output_gif_path, start_time, stop_time, fps
 
         print(f"Loading video: {video_path}")
         clip = VideoFileClip(video_path)
-
+        if stop_time is None:
+            stop_time = clip.duration
         if start_time < 0 or stop_time <= start_time or stop_time > clip.duration:
             raise ValueError(
                 f"Error: Invalid start/stop times. "
@@ -66,48 +67,73 @@ def convert_video_to_gif(video_path, output_gif_path, start_time, stop_time, fps
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Convert a video to a GIF, trimming it based on start and stop times, with given frames per second (fps; default=10)."
+        description="Convert a video to a GIF, with options for trimming and scaling."
     )
+    # Positional arguments
     parser.add_argument(
         "video_path",
         type=str,
+        nargs='?',
+        default=None,
         help="Path to the input video file (e.g., path/to/video.mp4)."
     )
     parser.add_argument(
         "output_gif_path",
         type=str,
+        nargs='?',
+        default=None,
         help="Path to save the output gif file (e.g., path/to/output.gif)."
+    )
+    # Optional arguments
+    parser.add_argument(
+        "-i", "--input",
+        type=str,
+        help="Path to the input video file (alternative to positional)."
+    )
+    parser.add_argument(
+        "-o", "--output",
+        type=str,
+        help="Path to save the output gif file (alternative to positional)."
     )
     parser.add_argument(
         "--start",
         type=float,
         default=0,
-        help="Start time in seconds for the start of the clip (default: beginning)."
+        help="Start time in seconds for the clip (default: beginning)."
     )
     parser.add_argument(
         "--scale",
         type=float,
         default=1.0,
-        help="Factor to scale the video resolution by (e.g., 0.5 for half size)."
+        help="Factor to scale video resolution (e.g., 0.5 for half size)."
     )
     parser.add_argument(
         "--stop",
         type=float,
         default=None,
-        help="Stop time in seconds for the end of the clip (default: end of video)."
+        help="Stop time in seconds for the clip (default: end of video)."
     )
     parser.add_argument(
         "--fps",
         type=int,
         default=10,
-        help="The framerate, in frames per second, for the output gif."
+        help="Framerate (frames per second) for the output GIF."
     )
 
     args = parser.parse_args()
 
+    # Determine input and output paths
+    video_path = args.video_path or args.input
+    output_gif_path = args.output_gif_path or args.output
+
+    if not video_path:
+        parser.error("Input video path is required, either as a positional argument or with -i/--input.")
+    if not output_gif_path:
+        parser.error("Output GIF path is required, either as a positional argument or with -o/--output.")
+
     convert_video_to_gif(
-        args.video_path,
-        args.output_gif_path,
+        video_path,
+        output_gif_path,
         args.start,
         args.stop,
         args.fps,

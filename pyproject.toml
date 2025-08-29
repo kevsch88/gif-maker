@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "gif-maker"
 version = "0.1.0"
@@ -7,3 +11,9 @@ dependencies = ["moviepy>=2.2.1"]
 authors = [{ name = "Kevin N. Schneider", email = "kevsch88@gmail.com" }]
 license = { text = "MIT License" }
 readme = "README.md"
+
+# [tool.setuptools]
+# package-dir = { "" = "src" }
+
+[project.scripts]
+set_up_folders = "video_to_gif:main"
